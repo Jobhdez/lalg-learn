@@ -19,6 +19,7 @@ const MatrixExpression = () => {
   const [opExp, setOpExp] = React.useState<string>("");
   const [steps, setSteps] = React.useState<string[]>([]);
   const [showSteps, setShowSteps] = React.useState<boolean>(false);
+  const [compiledCode, setCompileCode] = React.useState<string>("");
 
   const compileToMathJax = (operation: string) => {
     const parseMatrix = (matrix: string) => {
@@ -122,6 +123,25 @@ const MatrixExpression = () => {
       });
   }
 
+  function compile_mat_exp() {
+    const mat_interp_api = "http://127.0.0.1:8000/api/c/matrix/";
+    const data = new URLSearchParams();
+    const vec_exp: string = matrix1 + opExp + matrix2;
+    data.append("exp", vec_exp);
+    fetch(mat_interp_api, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: data,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.exp);
+        setCompileCode(data.exp);
+      });
+  }
   return (
     <Box p={45}>
       <MathJaxProvider>
@@ -183,8 +203,6 @@ const MatrixExpression = () => {
           <CardContent>
             <Button
               onClick={() => setShowSteps(!showSteps)}
-              variant="contained"
-              color="primary"
             >
               {showSteps ? "Hide Steps" : "Show Steps"}
             </Button>
@@ -197,6 +215,17 @@ const MatrixExpression = () => {
           </CardContent>
         </Card>
       </MathJaxProvider>
+      <Card>
+        <CardHeader title="Generate C code"/>
+        <CardContent>
+      <Button onClick={compile_mat_exp}>Compile to C</Button>
+      <Box>
+            <pre>
+              <code>{compiledCode}</code>
+            </pre>
+      </Box>
+      </CardContent>
+      </Card>
     </Box>
   );
 };
