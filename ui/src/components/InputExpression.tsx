@@ -11,6 +11,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import "../assets/styles.css";
+import Divider from "@mui/material/Divider";
 
 const InputExpression = () => {
   const [vector1, setVector1] = React.useState<string>("");
@@ -82,57 +83,69 @@ const InputExpression = () => {
       body: data,
     }).then((response) => response.json()).then((data) => {console.log(data.exp); vector_to_mathjax(data.exp)})
   }
-  
 
   return (
     <Box p={45}>
-      <Card sx={{ width: 500, maxWidth: "100%" }}>
-        <CardHeader title="Vector Operations" />
-        <CardContent>
-          <Box mb={2}>
-            <TextField
-              label="[2 3 4 5]"
-              id="vector1-input"
-              fullWidth
-              onChange={(e) => setVector1(e.target.value)}
-            />
-          </Box>
-          <Box mb={2}>
-            <TextField
-              label="[4 5 6 7]"
-              id="vector2-input"
-              fullWidth
-              onChange={(e) => setVector2(e.target.value)}
-            />
-          </Box>
-          <Box mb={2}>
-            <FormControl fullWidth>
-              <InputLabel id="operator-select-label">Operator</InputLabel>
-              <Select
-                labelId="operator-select-label"
-                id="operator-select"
-                label="Operation"
-                onChange={(e) => compileToMathJax(e.target.value as string)}
-              >
-                <MenuItem value="add">Add</MenuItem>
-                <MenuItem value="subtract">Subtract</MenuItem>
-                <MenuItem value="dot-product">Dot Product</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-          <Box mt={2}>
-            <MathJaxProvider>
+      <MathJaxProvider>
+        <Card sx={{ width: 1000, mb: 2 }}>
+          <CardHeader title="Vector Operations" />
+          <Divider component="li" />
+          <CardContent>
+            <Box mb={2}>
+              <TextField
+                label="[2 3 4 5]"
+                id="vector1-input"
+                fullWidth
+                onChange={(e) => setVector1(e.target.value)}
+              />
+            </Box>
+            <Box mb={2}>
+              <TextField
+                label="[4 5 6 7]"
+                id="vector2-input"
+                fullWidth
+                onChange={(e) => setVector2(e.target.value)}
+              />
+            </Box>
+            <Box mb={2}>
+              <FormControl fullWidth>
+                <InputLabel id="operator-select-label">Operator</InputLabel>
+                <Select
+                  labelId="operator-select-label"
+                  id="operator-select"
+                  label="Operation"
+                  onChange={(e) => compileToMathJax(e.target.value as string)}
+                >
+                  <MenuItem value="add">Add</MenuItem>
+                  <MenuItem value="subtract">Subtract</MenuItem>
+                  <MenuItem value="dot-product">Dot Product</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          </CardContent>
+        </Card>
+
+        <Card sx={{ width: 1000, mb: 2 }}>
+          <CardHeader title="Vector Operations" />
+          <Divider component="li" />
+          <CardContent>
+            <Box mt={2}>
               <MathJaxFormula formula={mathExp} />
-            </MathJaxProvider>
-          </Box>
-          <Button onClick={evaluate}>Evaluate exp</Button>
-          <Box mt={2}>
-            <MathJaxProvider>
+            </Box>
+            <Button onClick={evaluate}>Evaluate exp</Button>
+          </CardContent>
+        </Card>
+
+        <Card sx={{ width: 1000 }}>
+          <CardHeader title="Vector Operations" />
+          <Divider component="li" />
+          <CardContent>
+            <Box mt={2}>
               <MathJaxFormula formula={vecExp} />
-            </MathJaxProvider>
-          </Box>
-        </CardContent>
-      </Card>
+            </Box>
+          </CardContent>
+        </Card>
+      </MathJaxProvider>
     </Box>
   );
 };
