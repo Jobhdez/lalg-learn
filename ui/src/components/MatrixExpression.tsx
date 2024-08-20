@@ -17,6 +17,8 @@ const MatrixExpression = () => {
   const [mathExp, setMathExp] = React.useState<string>("");
   const [matExp, setMatExp] = React.useState<string>("");
   const [opExp, setOpExp] = React.useState<string>("");
+  const [steps, setSteps] = React.useState<string[]>([]);
+  const [showSteps, setShowSteps] = React.useState<boolean>(false);
 
   const compileToMathJax = (operation: string) => {
     const parseMatrix = (matrix: string) => {
@@ -53,12 +55,32 @@ const MatrixExpression = () => {
         op = "+";
     }
 
-    const matrixToString = (matrix: number[][]) =>
+    const matrixToString = (matrix: (number | string)[][]) =>
       matrix.map((row) => row.join(" & ")).join(" \\\\ ");
 
-    setMathExp(
-      `$$\\begin{pmatrix} ${matrixToString(mat1)} \\end{pmatrix} ${op} \\begin{pmatrix} ${matrixToString(mat2)} \\end{pmatrix}$$`
+    const initialStep = `$$\\begin{pmatrix} ${matrixToString(
+      mat1
+    )} \\end{pmatrix} ${op} \\begin{pmatrix} ${matrixToString(mat2)} \\end{pmatrix}$$`;
+
+    const intermediateStep = mat1.map((row, i) =>
+      row.map((value, j) => `${value} ${op} ${mat2[i][j]}`)
     );
+    const intermediateExp = `$$\\begin{pmatrix} ${matrixToString(
+      intermediateStep
+    )} \\end{pmatrix}$$`;
+
+    const finalStep = mat1.map((row, i) =>
+      row.map((value, j) =>
+        operation === "add" ? value + mat2[i][j] : value - mat2[i][j]
+      )
+    );
+    const finalExp = `$$\\begin{pmatrix} ${matrixToString(
+      finalStep
+    )} \\end{pmatrix}$$`;
+
+    setSteps([initialStep, intermediateExp, finalExp]);
+
+    setMathExp(initialStep);
   };
 
   const matrix_to_math = (matrix: string) => {
@@ -77,14 +99,14 @@ const MatrixExpression = () => {
     const mat = parseMatrix(matrix);
     const matrixToString = (matrix: number[][]) =>
       matrix.map((row) => row.join(" & ")).join(" \\\\ ");
-    setMatExp( `$$\\begin{pmatrix} ${matrixToString(mat)} \\end{pmatrix} $$`);
-  }
+    setMatExp(`$$\\begin{pmatrix} ${matrixToString(mat)} \\end{pmatrix} $$`);
+  };
 
   function evaluate_mat() {
-    const mat_interp_api = "http://127.0.0.1:8000/api/matrix/"
+    const mat_interp_api = "http://127.0.0.1:8000/api/matrix/";
     const data = new URLSearchParams();
     const vec_exp: string = matrix1 + opExp + matrix2;
-    data.append("exp", vec_exp)
+    data.append("exp", vec_exp);
     fetch(mat_interp_api, {
       method: "POST",
       headers: {
@@ -92,58 +114,90 @@ const MatrixExpression = () => {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: data,
-    }).then((response) => response.json()).then((data) => {console.log(data.exp); matrix_to_math(data.exp)})
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.exp);
+        matrix_to_math(data.exp);
+      });
   }
-  
+
   return (
-  
-    <Card sx={{ width: 500, maxWidth: "100%" }}>
-      <CardHeader title="Matrix Operations" />
-      <CardContent>
-        <Box mb={2}>
-          <TextField
-            label="[[4 5 6 7][6 7 8 9]]"
-            id="matrix1-input"
-            fullWidth
-            onChange={(e) => setMatrix1(e.target.value)}
-          />
-        </Box>
-        <Box mb={2}>
-          <TextField
-            label="[[5 6 7 7][7 8 9 0]]"
-            id="matrix2-input"
-            fullWidth
-            onChange={(e) => setMatrix2(e.target.value)}
-          />
-        </Box>
-        <Box mb={2}>
-          <FormControl fullWidth>
-            <InputLabel id="operator-select-label">Operator</InputLabel>
-            <Select
-              labelId="operator-select-label"
-              id="operator-select"
-              label="Operation"
-              onChange={(e) => compileToMathJax(e.target.value as string)}
-            >
-              <MenuItem value="add">Add</MenuItem>
-              <MenuItem value="subtract">Subtract</MenuItem>
-              <MenuItem value="multiply">Multiply</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-        <Box mt={2}>
-          <MathJaxProvider>
-            <MathJaxFormula formula={mathExp} />
-          </MathJaxProvider>
-        </Box>
-        <Button onClick={evaluate_mat}>Evaluate exp</Button>
-        <Box mt={2}>
-            <MathJaxProvider>
+    <Box p={45}>
+      <MathJaxProvider>
+        <Card sx={{ width: 1000, mb: 2 }}>
+          <CardHeader title="Matrix Arithmetic" />
+          <CardContent>
+            <Box mb={2}>
+              <TextField
+                label="[[4 5 6 7][6 7 8 9]]"
+                id="matrix1-input"
+                fullWidth
+                onChange={(e) => setMatrix1(e.target.value)}
+              />
+            </Box>
+            <Box mb={2}>
+              <TextField
+                label="[[5 6 7 7][7 8 9 0]]"
+                id="matrix2-input"
+                fullWidth
+                onChange={(e) => setMatrix2(e.target.value)}
+              />
+            </Box>
+            <Box mb={2}>
+              <FormControl fullWidth>
+                <InputLabel id="operator-select-label">Operator</InputLabel>
+                <Select
+                  labelId="operator-select-label"
+                  id="operator-select"
+                  label="Operation"
+                  onChange={(e) => compileToMathJax(e.target.value as string)}
+                >
+                  <MenuItem value="add">Add</MenuItem>
+                  <MenuItem value="subtract">Subtract</MenuItem>
+                  <MenuItem value="multiply">Multiply</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          </CardContent>
+        </Card>
+        <Card sx={{ width: 1000, mb: 2 }}>
+          <CardHeader title="Input Matrix Expression" />
+          <CardContent>
+            <Box mt={2}>
+              <MathJaxFormula formula={mathExp} />
+            </Box>
+            <Button onClick={evaluate_mat}>Evaluate exp</Button>
+          </CardContent>
+        </Card>
+        <Card sx={{ width: 1000, mb: 2 }}>
+          <CardHeader title="Result" />
+          <CardContent>
+            <Box mt={2}>
               <MathJaxFormula formula={matExp} />
-            </MathJaxProvider>
-        </Box>
-      </CardContent>
-    </Card>
+            </Box>
+          </CardContent>
+        </Card>
+        <Card sx={{ width: 1000, mb: 2 }}>
+          <CardHeader title="Computation Steps" />
+          <CardContent>
+            <Button
+              onClick={() => setShowSteps(!showSteps)}
+              variant="contained"
+              color="primary"
+            >
+              {showSteps ? "Hide Steps" : "Show Steps"}
+            </Button>
+            {showSteps &&
+              steps.map((step, index) => (
+                <Box mt={2} key={index}>
+                  <MathJaxFormula formula={step} />
+                </Box>
+              ))}
+          </CardContent>
+        </Card>
+      </MathJaxProvider>
+    </Box>
   );
 };
 
