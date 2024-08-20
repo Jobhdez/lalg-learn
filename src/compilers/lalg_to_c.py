@@ -1,4 +1,4 @@
-from src.ast_to_lalg import (
+from src.compilers.ast_to_lalg import (
     LalgInt,
     LalgVec,
     LalgOp,
