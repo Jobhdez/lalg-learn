@@ -10,15 +10,17 @@ import Select from "@mui/material/Select";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
-import "../assets/styles.css";
 import Divider from "@mui/material/Divider";
 
-const InputExpression = () => {
+const VectorExpression = () => {
   const [vector1, setVector1] = React.useState<string>("");
   const [vector2, setVector2] = React.useState<string>("");
   const [mathExp, setMathExp] = React.useState<string>("");
-  const [opExp, setOpExp] = React.useState<string>("");
   const [vecExp, setVecExp] = React.useState<string>("");
+  const [opExp, setOpExp] = React.useState<string>("");
+  const [steps, setSteps] = React.useState<string[]>([]);
+  const [showSteps, setShowSteps] = React.useState<boolean>(false);
+  const [compiledCode, setCompileCode] = React.useState<string>("");
 
   const compileToMathJax = (operation: string) => {
     const parseVector = (vector: string) => {
@@ -50,12 +52,27 @@ const InputExpression = () => {
         op = "+";
     }
 
-    setMathExp(
-      `$$\\begin{pmatrix} ${vec1.join(" & ")} \\end{pmatrix} ${op} \\begin{pmatrix} ${vec2.join(" & ")} \\end{pmatrix}$$`,
+    const vectorToString = (vector: number[]) =>
+      vector.join(" & ");
+
+    const initialStep = `$$\\begin{pmatrix} ${vectorToString(
+      vec1
+    )} \\end{pmatrix} ${op} \\begin{pmatrix} ${vectorToString(vec2)} \\end{pmatrix}$$`;
+
+    const intermediateStep = vec1.map((value, i) => `${value} ${op} ${vec2[i]}`);
+    const intermediateExp = `$$\\begin{pmatrix} ${intermediateStep.join(" & ")} \\end{pmatrix}$$`;
+
+    const finalStep = vec1.map((value, i) =>
+      operation === "add" ? value + vec2[i] : value - vec2[i]
     );
+    const finalExp = `$$\\begin{pmatrix} ${finalStep.join(" & ")} \\end{pmatrix}$$`;
+
+    setSteps([initialStep, intermediateExp, finalExp]);
+
+    setMathExp(initialStep);
   };
 
-  function vector_to_mathjax(vector: string) {
+  const vector_to_mathjax = (vector: string) => {
     const parseVector = (vector: string) => {
       return vector
         .replace(/[\[\]]/g, "")
@@ -64,16 +81,14 @@ const InputExpression = () => {
         .map(Number);
     };
     const vec = parseVector(vector);
-
     setVecExp(`$$\\begin{pmatrix} ${vec.join(" & ")} \\end{pmatrix}$$`);
-    console.log(vecExp);
-  }
+  };
 
-  function evaluate() {
-    const vector_interp_api = "http://127.0.0.1:8000/api/vector/"
+  function evaluate_vec() {
+    const vector_interp_api = "http://127.0.0.1:8000/api/vector/";
     const data = new URLSearchParams();
     const vec_exp: string = vector1 + opExp + vector2;
-    data.append("exp", vec_exp)
+    data.append("exp", vec_exp);
     fetch(vector_interp_api, {
       method: "POST",
       headers: {
@@ -81,7 +96,32 @@ const InputExpression = () => {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: data,
-    }).then((response) => response.json()).then((data) => {console.log(data.exp); vector_to_mathjax(data.exp)})
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.exp);
+        vector_to_mathjax(data.exp);
+      });
+  }
+
+  function compile_vec_exp() {
+    const vec_interp_api = "http://127.0.0.1:8000/api/c/vector/";
+    const data = new URLSearchParams();
+    const vec_exp: string = vector1 + opExp + vector2;
+    data.append("exp", vec_exp);
+    fetch(vec_interp_api, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: data,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.exp);
+        setCompileCode(data.exp);
+      });
   }
 
   return (
@@ -89,7 +129,6 @@ const InputExpression = () => {
       <MathJaxProvider>
         <Card sx={{ width: 1000, mb: 2 }}>
           <CardHeader title="Vector Operations" />
-          <Divider component="li" />
           <CardContent>
             <Box mb={2}>
               <TextField
@@ -126,22 +165,49 @@ const InputExpression = () => {
         </Card>
 
         <Card sx={{ width: 1000, mb: 2 }}>
-          <CardHeader title="Vector Operations" />
-          <Divider component="li" />
+          <CardHeader title="Input Vector Expression" />
           <CardContent>
             <Box mt={2}>
               <MathJaxFormula formula={mathExp} />
             </Box>
-            <Button onClick={evaluate}>Evaluate exp</Button>
+            <Button onClick={evaluate_vec}>Evaluate exp</Button>
           </CardContent>
         </Card>
 
-        <Card sx={{ width: 1000 }}>
-          <CardHeader title="Vector Operations" />
-          <Divider component="li" />
+        <Card sx={{ width: 1000, mb: 2 }}>
+          <CardHeader title="Result" />
           <CardContent>
             <Box mt={2}>
               <MathJaxFormula formula={vecExp} />
+            </Box>
+          </CardContent>
+        </Card>
+
+        <Card sx={{ width: 1000, mb:2 }}>
+          <CardHeader title="Computation Steps" />
+          <CardContent>
+            <Button
+              onClick={() => setShowSteps(!showSteps)}
+            >
+              {showSteps ? "Hide Steps" : "Show Steps"}
+            </Button>
+            {showSteps &&
+              steps.map((step, index) => (
+                <Box mt={2} key={index}>
+                  <MathJaxFormula formula={step} />
+                </Box>
+              ))}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader title="Generate C code"/>
+          <CardContent>
+            <Button onClick={compile_vec_exp}>Compile to C</Button>
+            <Box>
+              <pre>
+                <code>{compiledCode}</code>
+              </pre>
             </Box>
           </CardContent>
         </Card>
@@ -150,4 +216,4 @@ const InputExpression = () => {
   );
 };
 
-export default InputExpression;
+export default VectorExpression;
