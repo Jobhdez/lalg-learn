@@ -1,5 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -9,7 +10,7 @@ import Select from "@mui/material/Select";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
-import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
 
 const MatrixExpression = () => {
   const [matrix1, setMatrix1] = React.useState<string>("");
@@ -142,90 +143,117 @@ const MatrixExpression = () => {
         setCompileCode(data.exp);
       });
   }
+
   return (
-    <Box p={45} sx={{bgcolor: "primary.dark", "&hover": {bgcolor: "primary.main",}, justifyContent: "center", alignItems: "center"}}>
+    <Box
+      sx={{
+        justifyContent: "center",
+        alignItems: "center",
+        bgcolor: "primary.dark",
+        minHeight: "100vh",
+        minWidth: "200vh",
+        padding: 2,
+        overflow: "auto",
+      }}
+    >
       <MathJaxProvider>
-        <Card sx={{ width: 1000, mb: 2 }}>
-          <CardHeader title="Matrix Arithmetic" />
-          <CardContent>
-            <Box mb={2}>
-              <TextField
-                label="[[4 5 6 7][6 7 8 9]]"
-                id="matrix1-input"
-                fullWidth
-                onChange={(e) => setMatrix1(e.target.value)}
-              />
-            </Box>
-            <Box mb={2}>
-              <TextField
-                label="[[5 6 7 7][7 8 9 0]]"
-                id="matrix2-input"
-                fullWidth
-                onChange={(e) => setMatrix2(e.target.value)}
-              />
-            </Box>
-            <Box mb={2}>
-              <FormControl fullWidth>
-                <InputLabel id="operator-select-label">Operator</InputLabel>
-                <Select
-                  labelId="operator-select-label"
-                  id="operator-select"
-                  label="Operation"
-                  onChange={(e) => compileToMathJax(e.target.value as string)}
-                >
-                  <MenuItem value="add">Add</MenuItem>
-                  <MenuItem value="subtract">Subtract</MenuItem>
-                  <MenuItem value="multiply">Multiply</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-          </CardContent>
-        </Card>
-        <Card sx={{ width: 1000, mb: 2 }}>
-          <CardHeader title="Input Matrix Expression" />
-          <CardContent>
-            <Box mt={2}>
-              <MathJaxFormula formula={mathExp} />
-            </Box>
-            <Button onClick={evaluate_mat}>Evaluate exp</Button>
-          </CardContent>
-        </Card>
-        <Card sx={{ width: 1000, mb: 2 }}>
-          <CardHeader title="Result" />
-          <CardContent>
-            <Box mt={2}>
-              <MathJaxFormula formula={matExp} />
-            </Box>
-          </CardContent>
-        </Card>
-        <Card sx={{ width: 1000, mb: 2 }}>
-          <CardHeader title="Computation Steps" />
-          <CardContent>
-            <Button
-              onClick={() => setShowSteps(!showSteps)}
-            >
-              {showSteps ? "Hide Steps" : "Show Steps"}
-            </Button>
-            {showSteps &&
-              steps.map((step, index) => (
-                <Box mt={2} key={index}>
-                  <MathJaxFormula formula={step} />
+        <Grid container spacing={2} justifyContent="center">
+          <Grid item xs={12}>
+            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+              <CardHeader title="Matrix Operations" />
+              <CardContent>
+                <Box mb={2}>
+                  <TextField
+                    label="[[4 5 6 7][6 7 8 9]]"
+                    id="matrix1-input"
+                    fullWidth
+                    onChange={(e) => setMatrix1(e.target.value)}
+                  />
                 </Box>
-              ))}
-          </CardContent>
-        </Card>
+                <Box mb={2}>
+                  <TextField
+                    label="[[5 6 7 7][7 8 9 0]]"
+                    id="matrix2-input"
+                    fullWidth
+                    onChange={(e) => setMatrix2(e.target.value)}
+                  />
+                </Box>
+                <Box mb={2}>
+                  <FormControl fullWidth>
+                    <InputLabel id="operator-select-label">Operator</InputLabel>
+                    <Select
+                      labelId="operator-select-label"
+                      id="operator-select"
+                      label="Operation"
+                      onChange={(e) => compileToMathJax(e.target.value as string)}
+                    >
+                      <MenuItem value="add">Add</MenuItem>
+                      <MenuItem value="subtract">Subtract</MenuItem>
+                      <MenuItem value="multiply">Multiply</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+              <CardHeader title="Input Matrix Expression" />
+              <CardContent>
+                <Box mt={2}>
+                  <MathJaxFormula formula={mathExp} />
+                </Box>
+                <Button onClick={evaluate_mat}>Evaluate exp</Button>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+              <CardHeader title="Result" />
+              <CardContent>
+                <Box mt={2}>
+                  <MathJaxFormula formula={matExp} />
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+              <CardHeader title="Computation Steps" />
+              <CardContent>
+                <Button
+                  onClick={() => setShowSteps(!showSteps)}
+                >
+                  {showSteps ? "Hide Steps" : "Show Steps"}
+                </Button>
+                {showSteps &&
+                  steps.map((step, index) => (
+                    <Box mt={2} key={index}>
+                      <MathJaxFormula formula={step} />
+                    </Box>
+                  ))}
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+              <CardHeader title="Generate C code" />
+              <CardContent>
+                <Button onClick={compile_mat_exp}>Compile to C</Button>
+                <Box>
+                  <pre>
+                    <code>{compiledCode}</code>
+                  </pre>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
       </MathJaxProvider>
-      <Card>
-        <CardHeader title="Generate C code"/>
-        <CardContent>
-      <Button onClick={compile_mat_exp}>Compile to C</Button>
-      <Box>
-            <pre>
-              <code>{compiledCode}</code>
-            </pre>
-      </Box>
-      </CardContent>
-      </Card>
     </Box>
   );
 };
