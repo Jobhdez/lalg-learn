@@ -10,7 +10,7 @@ import Select from "@mui/material/Select";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
-import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
 
 const VectorExpression = () => {
   const [vector1, setVector1] = React.useState<string>("");
@@ -125,92 +125,114 @@ const VectorExpression = () => {
   }
 
   return (
-    <Box p={45} sx={{bgcolor: "primary.dark", "&hover": {bgcolor: "primary.main",}, justifyContent: "center", alignItems: "center"}}>
+    <Box
+      sx={{
+        justifyContent: "center",
+        alignItems: "center",
+        bgcolor: "primary.dark",
+        minHeight: "100vh",
+        minWidth: "200vh",
+        padding: 2, // Add padding to prevent content from touching the edges
+        overflow: "auto", // Ensure content doesn't overflow the screen
+      }}
+    >
       <MathJaxProvider>
-        <Card sx={{ width: 1000, mb: 2, justifyContent:"center", alignItems:"center"}}>
-          <CardHeader title="Vector Operations" />
-          <CardContent>
-            <Box mb={2}>
-              <TextField
-                label="[2 3 4 5]"
-                id="vector1-input"
-                fullWidth
-                onChange={(e) => setVector1(e.target.value)}
-              />
-            </Box>
-            <Box mb={2}>
-              <TextField
-                label="[4 5 6 7]"
-                id="vector2-input"
-                fullWidth
-                onChange={(e) => setVector2(e.target.value)}
-              />
-            </Box>
-            <Box mb={2}>
-              <FormControl fullWidth>
-                <InputLabel id="operator-select-label">Operator</InputLabel>
-                <Select
-                  labelId="operator-select-label"
-                  id="operator-select"
-                  label="Operation"
-                  onChange={(e) => compileToMathJax(e.target.value as string)}
-                >
-                  <MenuItem value="add">Add</MenuItem>
-                  <MenuItem value="subtract">Subtract</MenuItem>
-                  <MenuItem value="dot-product">Dot Product</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-          </CardContent>
-        </Card>
-
-        <Card sx={{ width: 1000, mb: 2 }}>
-          <CardHeader title="Input Vector Expression" />
-          <CardContent>
-            <Box mt={2}>
-              <MathJaxFormula formula={mathExp} />
-            </Box>
-            <Button onClick={evaluate_vec}>Evaluate exp</Button>
-          </CardContent>
-        </Card>
-
-        <Card sx={{ width: 1000, mb: 2 }}>
-          <CardHeader title="Result" />
-          <CardContent>
-            <Box mt={2}>
-              <MathJaxFormula formula={vecExp} />
-            </Box>
-          </CardContent>
-        </Card>
-
-        <Card sx={{ width: 1000, mb:2 }}>
-          <CardHeader title="Computation Steps" />
-          <CardContent>
-            <Button
-              onClick={() => setShowSteps(!showSteps)}
-            >
-              {showSteps ? "Hide Steps" : "Show Steps"}
-            </Button>
-            {showSteps &&
-              steps.map((step, index) => (
-                <Box mt={2} key={index}>
-                  <MathJaxFormula formula={step} />
+        <Grid container spacing={2} justifyContent="center">
+          <Grid item xs={12}>
+            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+              <CardHeader title="Vector Operations" />
+              <CardContent>
+                <Box mb={2}>
+                  <TextField
+                    label="[2 3 4 5]"
+                    id="vector1-input"
+                    fullWidth
+                    onChange={(e) => setVector1(e.target.value)}
+                  />
                 </Box>
-              ))}
-          </CardContent>
-        </Card>
+                <Box mb={2}>
+                  <TextField
+                    label="[4 5 6 7]"
+                    id="vector2-input"
+                    fullWidth
+                    onChange={(e) => setVector2(e.target.value)}
+                  />
+                </Box>
+                <Box mb={2}>
+                  <FormControl fullWidth>
+                    <InputLabel id="operator-select-label">Operator</InputLabel>
+                    <Select
+                      labelId="operator-select-label"
+                      id="operator-select"
+                      label="Operation"
+                      onChange={(e) => compileToMathJax(e.target.value as string)}
+                    >
+                      <MenuItem value="add">Add</MenuItem>
+                      <MenuItem value="subtract">Subtract</MenuItem>
+                      <MenuItem value="dot-product">Dot Product</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
 
-        <Card>
-          <CardHeader title="Generate C code"/>
-          <CardContent>
-            <Button onClick={compile_vec_exp}>Compile to C</Button>
-            <Box>
-              <pre>
-                <code>{compiledCode}</code>
-              </pre>
-            </Box>
-          </CardContent>
-        </Card>
+          <Grid item xs={12}>
+            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+              <CardHeader title="Input Vector Expression" />
+              <CardContent>
+                <Box mt={2}>
+                  <MathJaxFormula formula={mathExp} />
+                </Box>
+                <Button onClick={evaluate_vec}>Evaluate exp</Button>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+              <CardHeader title="Result" />
+              <CardContent>
+                <Box mt={2}>
+                  <MathJaxFormula formula={vecExp} />
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+              <CardHeader title="Computation Steps" />
+              <CardContent>
+                <Button
+                  onClick={() => setShowSteps(!showSteps)}
+                >
+                  {showSteps ? "Hide Steps" : "Show Steps"}
+                </Button>
+                {showSteps &&
+                  steps.map((step, index) => (
+                    <Box mt={2} key={index}>
+                      <MathJaxFormula formula={step} />
+                    </Box>
+                  ))}
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+              <CardHeader title="Generate C code" />
+              <CardContent>
+                <Button onClick={compile_vec_exp}>Compile to C</Button>
+                <Box>
+                  <pre>
+                    <code>{compiledCode}</code>
+                  </pre>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
       </MathJaxProvider>
     </Box>
   );
