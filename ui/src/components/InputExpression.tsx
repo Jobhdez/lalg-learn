@@ -125,9 +125,9 @@ const VectorExpression = () => {
   }
 
   return (
-    <Box p={45}>
+    <Box p={45} sx={{bgcolor: "primary.dark", "&hover": {bgcolor: "primary.main",}, justifyContent: "center", alignItems: "center"}}>
       <MathJaxProvider>
-        <Card sx={{ width: 1000, mb: 2 }}>
+        <Card sx={{ width: 1000, mb: 2, justifyContent:"center", alignItems:"center"}}>
           <CardHeader title="Vector Operations" />
           <CardContent>
             <Box mb={2}>
