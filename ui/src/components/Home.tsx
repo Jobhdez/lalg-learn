@@ -1,44 +1,109 @@
-// App.tsx
 import React from 'react';
 import { Button, Grid, Card, CardActions, CardContent, Typography, Box } from '@mui/material';
 
 const Home = () => {
-
   return (
-    <Box p={40}>
+    <Box p={5} sx={{ bgcolor: "primary.dark", minHeight: "100vh", justifyContent: "center", alignItems: "center" }}>
       <Grid container spacing={2} justifyContent="center">
-        <Grid item xs={12} sm={6}>
-          <Card sx={{ width: 500, maxWidth: "100%" }}>
-            
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  Matrices
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Explore matrix arithmetic
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button variant="contained" href="matrix">
-                  Matrix calculator
-                </Button>
-              </CardActions>
-            
+        <Grid item xs={12} sm={6} md={4}>
+          <Card sx={{ maxWidth: 500 }}>
+            <CardContent>
+              <Typography variant="h5" component="div">
+                Matrices
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Explore matrix arithmetic
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button variant="contained" href="matrix">
+                Matrix calculator
+              </Button>
+            </CardActions>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <Card sx={{ width: 500, maxWidth: "100%" }}>
-            
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  Vectors
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Explore vector arithmetic
-                </Typography>
-              </CardContent>
+        <Grid item xs={12} sm={6} md={4}>
+          <Card sx={{ maxWidth: 500 }}>
+            <CardContent>
+              <Typography variant="h5" component="div">
+                Vectors
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Explore vector arithmetic
+              </Typography>
+            </CardContent>
             <CardActions>
-              <Button variant="contained" href="vector">Vector Calculator</Button>
+              <Button variant="contained" href="vector">
+                Vector Calculator
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Card sx={{ maxWidth: 500 }}>
+            <CardContent>
+              <Typography variant="h5" component="div">
+                Polynomials
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Explore polynomial functions
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button variant="contained" href="polynomial">
+                Polynomial Calculator
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Card sx={{ maxWidth: 500 }}>
+            <CardContent>
+              <Typography variant="h5" component="div">
+                Rational Functions
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Explore rational functions
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button variant="contained" href="rational-function">
+                Rational Function Calculator
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Card sx={{ maxWidth: 500 }}>
+            <CardContent>
+              <Typography variant="h5" component="div">
+                Fractions
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Explore fractions
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button variant="contained" href="fractions">
+                Fraction Calculator
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Card sx={{ maxWidth: 500 }}>
+            <CardContent>
+              <Typography variant="h5" component="div">
+                Calculus
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Explore calculus
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button variant="contained" href="calculus">
+                Calculus Calculator
+              </Button>
             </CardActions>
           </Card>
         </Grid>
@@ -46,6 +111,5 @@ const Home = () => {
     </Box>
   );
 };
-
 
 export default Home;
