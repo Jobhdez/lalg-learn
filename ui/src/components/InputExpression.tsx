@@ -132,8 +132,8 @@ const VectorExpression = () => {
         bgcolor: "primary.dark",
         minHeight: "100vh",
         minWidth: "200vh",
-        padding: 2, // Add padding to prevent content from touching the edges
-        overflow: "auto", // Ensure content doesn't overflow the screen
+        padding: 2,
+        overflow: "auto", 
       }}
     >
       <MathJaxProvider>
