@@ -52,18 +52,19 @@ const VectorExpression = () => {
         op = "+";
     }
 
-    const vectorToString = (vector: number[]) =>
-      vector.join(" & ");
+    const vectorToString = (vector: number[]) => vector.join(" & ");
 
     const initialStep = `$$\\begin{pmatrix} ${vectorToString(
-      vec1
+      vec1,
     )} \\end{pmatrix} ${op} \\begin{pmatrix} ${vectorToString(vec2)} \\end{pmatrix}$$`;
 
-    const intermediateStep = vec1.map((value, i) => `${value} ${op} ${vec2[i]}`);
+    const intermediateStep = vec1.map(
+      (value, i) => `${value} ${op} ${vec2[i]}`,
+    );
     const intermediateExp = `$$\\begin{pmatrix} ${intermediateStep.join(" & ")} \\end{pmatrix}$$`;
 
     const finalStep = vec1.map((value, i) =>
-      operation === "add" ? value + vec2[i] : value - vec2[i]
+      operation === "add" ? value + vec2[i] : value - vec2[i],
     );
     const finalExp = `$$\\begin{pmatrix} ${finalStep.join(" & ")} \\end{pmatrix}$$`;
 
@@ -133,13 +134,15 @@ const VectorExpression = () => {
         minHeight: "100vh",
         minWidth: "200vh",
         padding: 2,
-        overflow: "auto", 
+        overflow: "auto",
       }}
     >
       <MathJaxProvider>
         <Grid container spacing={2} justifyContent="center">
           <Grid item xs={12}>
-            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+            <Card
+              sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}
+            >
               <CardHeader title="Vector Operations" />
               <CardContent>
                 <Box mb={2}>
@@ -165,7 +168,9 @@ const VectorExpression = () => {
                       labelId="operator-select-label"
                       id="operator-select"
                       label="Operation"
-                      onChange={(e) => compileToMathJax(e.target.value as string)}
+                      onChange={(e) =>
+                        compileToMathJax(e.target.value as string)
+                      }
                     >
                       <MenuItem value="add">Add</MenuItem>
                       <MenuItem value="subtract">Subtract</MenuItem>
@@ -178,7 +183,9 @@ const VectorExpression = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+            <Card
+              sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}
+            >
               <CardHeader title="Input Vector Expression" />
               <CardContent>
                 <Box mt={2}>
@@ -190,7 +197,9 @@ const VectorExpression = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+            <Card
+              sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}
+            >
               <CardHeader title="Result" />
               <CardContent>
                 <Box mt={2}>
@@ -201,12 +210,12 @@ const VectorExpression = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+            <Card
+              sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}
+            >
               <CardHeader title="Computation Steps" />
               <CardContent>
-                <Button
-                  onClick={() => setShowSteps(!showSteps)}
-                >
+                <Button onClick={() => setShowSteps(!showSteps)}>
                   {showSteps ? "Hide Steps" : "Show Steps"}
                 </Button>
                 {showSteps &&
@@ -220,7 +229,9 @@ const VectorExpression = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+            <Card
+              sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}
+            >
               <CardHeader title="Generate C code" />
               <CardContent>
                 <Button onClick={compile_vec_exp}>Compile to C</Button>

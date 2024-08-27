@@ -28,12 +28,7 @@ const MatrixExpression = () => {
         .trim()
         .split(/[\[\]]+/)
         .filter((row) => row.trim() !== "")
-        .map((row) =>
-          row
-            .trim()
-            .split(/\s+/)
-            .map(Number)
-        );
+        .map((row) => row.trim().split(/\s+/).map(Number));
     };
 
     const mat1 = parseMatrix(matrix1);
@@ -61,23 +56,23 @@ const MatrixExpression = () => {
       matrix.map((row) => row.join(" & ")).join(" \\\\ ");
 
     const initialStep = `$$\\begin{pmatrix} ${matrixToString(
-      mat1
+      mat1,
     )} \\end{pmatrix} ${op} \\begin{pmatrix} ${matrixToString(mat2)} \\end{pmatrix}$$`;
 
     const intermediateStep = mat1.map((row, i) =>
-      row.map((value, j) => `${value} ${op} ${mat2[i][j]}`)
+      row.map((value, j) => `${value} ${op} ${mat2[i][j]}`),
     );
     const intermediateExp = `$$\\begin{pmatrix} ${matrixToString(
-      intermediateStep
+      intermediateStep,
     )} \\end{pmatrix}$$`;
 
     const finalStep = mat1.map((row, i) =>
       row.map((value, j) =>
-        operation === "add" ? value + mat2[i][j] : value - mat2[i][j]
-      )
+        operation === "add" ? value + mat2[i][j] : value - mat2[i][j],
+      ),
     );
     const finalExp = `$$\\begin{pmatrix} ${matrixToString(
-      finalStep
+      finalStep,
     )} \\end{pmatrix}$$`;
 
     setSteps([initialStep, intermediateExp, finalExp]);
@@ -91,12 +86,7 @@ const MatrixExpression = () => {
         .trim()
         .split(/[\[\]]+/)
         .filter((row) => row.trim() !== "")
-        .map((row) =>
-          row
-            .trim()
-            .split(/\s+/)
-            .map(Number)
-        );
+        .map((row) => row.trim().split(/\s+/).map(Number));
     };
     const mat = parseMatrix(matrix);
     const matrixToString = (matrix: number[][]) =>
@@ -159,7 +149,9 @@ const MatrixExpression = () => {
       <MathJaxProvider>
         <Grid container spacing={2} justifyContent="center">
           <Grid item xs={12}>
-            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+            <Card
+              sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}
+            >
               <CardHeader title="Matrix Operations" />
               <CardContent>
                 <Box mb={2}>
@@ -185,7 +177,9 @@ const MatrixExpression = () => {
                       labelId="operator-select-label"
                       id="operator-select"
                       label="Operation"
-                      onChange={(e) => compileToMathJax(e.target.value as string)}
+                      onChange={(e) =>
+                        compileToMathJax(e.target.value as string)
+                      }
                     >
                       <MenuItem value="add">Add</MenuItem>
                       <MenuItem value="subtract">Subtract</MenuItem>
@@ -198,7 +192,9 @@ const MatrixExpression = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+            <Card
+              sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}
+            >
               <CardHeader title="Input Matrix Expression" />
               <CardContent>
                 <Box mt={2}>
@@ -210,7 +206,9 @@ const MatrixExpression = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+            <Card
+              sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}
+            >
               <CardHeader title="Result" />
               <CardContent>
                 <Box mt={2}>
@@ -221,12 +219,12 @@ const MatrixExpression = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+            <Card
+              sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}
+            >
               <CardHeader title="Computation Steps" />
               <CardContent>
-                <Button
-                  onClick={() => setShowSteps(!showSteps)}
-                >
+                <Button onClick={() => setShowSteps(!showSteps)}>
                   {showSteps ? "Hide Steps" : "Show Steps"}
                 </Button>
                 {showSteps &&
@@ -240,7 +238,9 @@ const MatrixExpression = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <Card sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}>
+            <Card
+              sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}
+            >
               <CardHeader title="Generate C code" />
               <CardContent>
                 <Button onClick={compile_mat_exp}>Compile to C</Button>
