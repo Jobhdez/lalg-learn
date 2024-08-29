@@ -1,31 +1,33 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import { MathJaxProvider, MathJaxFormula } from "mathjax3-react";
-import Select from "@mui/material/Select";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardHeader from "@mui/material/CardHeader";
-import Grid from "@mui/material/Grid";
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import { MathJaxProvider, MathJaxFormula } from 'mathjax3-react';
+import Select from '@mui/material/Select';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import DownloadIcon from '@mui/icons-material/Download';
 
 const VectorExpression = () => {
-  const [vector1, setVector1] = React.useState<string>("");
-  const [vector2, setVector2] = React.useState<string>("");
-  const [mathExp, setMathExp] = React.useState<string>("");
-  const [vecExp, setVecExp] = React.useState<string>("");
-  const [opExp, setOpExp] = React.useState<string>("");
+  const [vector1, setVector1] = React.useState<string>('');
+  const [vector2, setVector2] = React.useState<string>('');
+  const [mathExp, setMathExp] = React.useState<string>('');
+  const [vecExp, setVecExp] = React.useState<string>('');
+  const [opExp, setOpExp] = React.useState<string>('');
   const [steps, setSteps] = React.useState<string[]>([]);
   const [showSteps, setShowSteps] = React.useState<boolean>(false);
-  const [compiledCode, setCompileCode] = React.useState<string>("");
-
+  const [compiledCode, setCompileCode] = React.useState<string>('');
   const compileToMathJax = (operation: string) => {
     const parseVector = (vector: string) => {
       return vector
-        .replace(/[\[\]]/g, "")
+        .replace(/[\[\]]/g, '')
         .trim()
         .split(/\s+/)
         .map(Number);
@@ -36,23 +38,23 @@ const VectorExpression = () => {
 
     let op: string;
     switch (operation) {
-      case "add":
-        op = "+";
+      case 'add':
+        op = '+';
         setOpExp(op);
         break;
-      case "subtract":
-        op = "-";
+      case 'subtract':
+        op = '-';
         setOpExp(op);
         break;
-      case "dot-product":
-        op = "*";
+      case 'dot-product':
+        op = '*';
         setOpExp(op);
         break;
       default:
-        op = "+";
+        op = '+';
     }
 
-    const vectorToString = (vector: number[]) => vector.join(" & ");
+    const vectorToString = (vector: number[]) => vector.join(' & ');
 
     const initialStep = `$$\\begin{pmatrix} ${vectorToString(
       vec1,
@@ -61,12 +63,14 @@ const VectorExpression = () => {
     const intermediateStep = vec1.map(
       (value, i) => `${value} ${op} ${vec2[i]}`,
     );
-    const intermediateExp = `$$\\begin{pmatrix} ${intermediateStep.join(" & ")} \\end{pmatrix}$$`;
+    const intermediateExp = `$$\\begin{pmatrix} ${intermediateStep.join(
+      ' & ',
+    )} \\end{pmatrix}$$`;
 
     const finalStep = vec1.map((value, i) =>
-      operation === "add" ? value + vec2[i] : value - vec2[i],
+      operation === 'add' ? value + vec2[i] : value - vec2[i],
     );
-    const finalExp = `$$\\begin{pmatrix} ${finalStep.join(" & ")} \\end{pmatrix}$$`;
+    const finalExp = `$$\\begin{pmatrix} ${finalStep.join(' & ')} \\end{pmatrix}$$`;
 
     setSteps([initialStep, intermediateExp, finalExp]);
 
@@ -76,25 +80,25 @@ const VectorExpression = () => {
   const vector_to_mathjax = (vector: string) => {
     const parseVector = (vector: string) => {
       return vector
-        .replace(/[\[\]]/g, "")
+        .replace(/[\[\]]/g, '')
         .trim()
         .split(/\s+/)
         .map(Number);
     };
     const vec = parseVector(vector);
-    setVecExp(`$$\\begin{pmatrix} ${vec.join(" & ")} \\end{pmatrix}$$`);
+    setVecExp(`$$\\begin{pmatrix} ${vec.join(' & ')} \\end{pmatrix}$$`);
   };
 
   function evaluate_vec() {
-    const vector_interp_api = "http://127.0.0.1:8000/api/vector/";
+    const vector_interp_api = 'http://127.0.0.1:8000/api/vector/';
     const data = new URLSearchParams();
     const vec_exp: string = vector1 + opExp + vector2;
-    data.append("exp", vec_exp);
+    data.append('exp', vec_exp);
     fetch(vector_interp_api, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded",
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: data,
     })
@@ -106,15 +110,15 @@ const VectorExpression = () => {
   }
 
   function compile_vec_exp() {
-    const vec_interp_api = "http://127.0.0.1:8000/api/c/vector/";
+    const vec_interp_api = 'http://127.0.0.1:8000/api/c/vector/';
     const data = new URLSearchParams();
     const vec_exp: string = vector1 + opExp + vector2;
-    data.append("exp", vec_exp);
+    data.append('exp', vec_exp);
     fetch(vec_interp_api, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded",
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: data,
     })
@@ -125,23 +129,37 @@ const VectorExpression = () => {
       });
   }
 
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(compiledCode);
+  };
+
+  const downloadCode = () => {
+    const element = document.createElement('a');
+    const file = new Blob([compiledCode], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = 'compiled_code.c';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
   return (
     <Box
       sx={{
-        justifyContent: "center",
-        alignItems: "center",
-        bgcolor: "primary.dark",
-        minHeight: "100vh",
-        minWidth: "200vh",
+        justifyContent: 'center',
+        alignItems: 'center',
+        bgcolor: 'primary.dark',
+        minHeight: '100vh',
+        minWidth: '200vh',
         padding: 2,
-        overflow: "auto",
+        overflow: 'auto',
       }}
     >
       <MathJaxProvider>
         <Grid container spacing={2} justifyContent="center">
           <Grid item xs={12}>
             <Card
-              sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}
+              sx={{ maxWidth: 1000, mx: 'auto', bgcolor: 'background.paper' }}
             >
               <CardHeader title="Vector Operations" />
               <CardContent>
@@ -184,7 +202,7 @@ const VectorExpression = () => {
 
           <Grid item xs={12}>
             <Card
-              sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}
+              sx={{ maxWidth: 1000, mx: 'auto', bgcolor: 'background.paper' }}
             >
               <CardHeader title="Input Vector Expression" />
               <CardContent>
@@ -198,7 +216,7 @@ const VectorExpression = () => {
 
           <Grid item xs={12}>
             <Card
-              sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}
+              sx={{ maxWidth: 1000, mx: 'auto', bgcolor: 'background.paper' }}
             >
               <CardHeader title="Result" />
               <CardContent>
@@ -211,12 +229,12 @@ const VectorExpression = () => {
 
           <Grid item xs={12}>
             <Card
-              sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}
+              sx={{ maxWidth: 1000, mx: 'auto', bgcolor: 'background.paper' }}
             >
               <CardHeader title="Computation Steps" />
               <CardContent>
                 <Button onClick={() => setShowSteps(!showSteps)}>
-                  {showSteps ? "Hide Steps" : "Show Steps"}
+                  {showSteps ? 'Hide Steps' : 'Show Steps'}
                 </Button>
                 {showSteps &&
                   steps.map((step, index) => (
@@ -230,15 +248,24 @@ const VectorExpression = () => {
 
           <Grid item xs={12}>
             <Card
-              sx={{ maxWidth: 1000, mx: "auto", bgcolor: "background.paper" }}
+              sx={{ maxWidth: 1000, mx: 'auto', bgcolor: 'background.paper' }}
             >
               <CardHeader title="Generate C code" />
               <CardContent>
                 <Button onClick={compile_vec_exp}>Compile to C</Button>
-                <Box>
-                  <pre>
+                <Box display="flex" alignItems="center">
+                  <pre style={{ flex: 1 }}>
                     <code>{compiledCode}</code>
                   </pre>
+                </Box>
+                <Box>
+                  <IconButton onClick={copyToClipboard}>
+                    <FileCopyIcon />
+                  </IconButton>
+
+                  <IconButton onClick={downloadCode}>
+                    <DownloadIcon />
+                  </IconButton>
                 </Box>
               </CardContent>
             </Card>

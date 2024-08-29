@@ -11,6 +11,9 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
+import DownloadIcon from "@mui/icons-material/Download";
 
 const MatrixExpression = () => {
   const [matrix1, setMatrix1] = React.useState<string>("");
@@ -134,6 +137,20 @@ const MatrixExpression = () => {
       });
   }
 
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(compiledCode);
+  };
+
+  const downloadCode = () => {
+    const element = document.createElement("a");
+    const file = new Blob([compiledCode], { type: "text/plain" });
+    element.href = URL.createObjectURL(file);
+    element.download = "compiled_code.c";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
   return (
     <Box
       sx={{
@@ -249,6 +266,12 @@ const MatrixExpression = () => {
                     <code>{compiledCode}</code>
                   </pre>
                 </Box>
+                <IconButton onClick={copyToClipboard}>
+                  <FileCopyIcon />
+                </IconButton>
+                <IconButton onClick={downloadCode}>
+                  <DownloadIcon />
+                </IconButton>
               </CardContent>
             </Card>
           </Grid>
